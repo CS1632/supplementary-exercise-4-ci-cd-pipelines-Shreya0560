@@ -1,3 +1,4 @@
+
 package edu.pitt.cs;
 
 import java.util.ArrayList;
@@ -18,8 +19,14 @@ public class RentACatImpl implements RentACat {
 	 */
 
 	public boolean returnCat(int id) {
-		// TODO
-		return false;
+		Cat catReturn = getCat(id);
+			// check if cat exists and is rented
+			if (catReturn != null && catReturn.getRented()) {
+				catReturn.returnCat(); 
+				return true;
+			} 
+			
+			return false;
 	}
 
 	/**
@@ -33,8 +40,15 @@ public class RentACatImpl implements RentACat {
 	 */
 
 	public boolean rentCat(int id) {
-		// TODO
-		return false;
+		
+		Cat rentCat = getCat(id);
+
+		if (rentCat != null && !rentCat.getRented()) {
+			rentCat.rentCat(); 
+			return true;
+		} 
+			
+			return false;
 	}
 
 	/**
@@ -48,8 +62,16 @@ public class RentACatImpl implements RentACat {
 	 */
 
 	public String listCats() {
-		// TODO
-		return "WRITE CODE FOR THIS";
+		StringBuilder CatList = new StringBuilder();
+
+		for (Cat cat : cats) {
+			//check if rented, if not, add to list!!!
+			if (!cat.getRented()) {
+				CatList.append("ID ").append(cat.getId()).append(". ").append(cat.getName()).append("\n");
+			}
+		}
+
+		return CatList.toString();
 	}
 
 	/**
@@ -62,8 +84,8 @@ public class RentACatImpl implements RentACat {
 	 */
 
 	public boolean catExists(int id) {
-		// TODO
-		return false;
+
+		 return getCat(id) != null;
 	}
 
 	/**
