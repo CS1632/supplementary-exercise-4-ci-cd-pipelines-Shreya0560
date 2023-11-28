@@ -40,10 +40,10 @@ jobs:
 
     # https://github.com/marketplace/actions/upload-a-build-artifact
     - name: Upload jacoco results as artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v2
       with:
         name: Jacoco coverage results
-        path: target/site/jacoco 
+        path: target/site/jacoco
         
     - name: Cache build
       uses: actions/cache@v3
@@ -53,7 +53,7 @@ jobs:
 
   # Uploads dependency graph to GitHub to receive Dependabot alerts 
   update_dependence_graph:
-
+  
     needs: [maven_test]  # Enforces that maven_test runs first
 
     runs-on: ubuntu-latest
@@ -67,6 +67,30 @@ jobs:
       with:
         key: cached-build-${{github.sha}}
         path: .
+
     # https://github.com/marketplace/actions/maven-dependency-tree-dependency-submission
     - name: Update dependency graph
-      uses: advanced-security/maven-dependency-submission-action@v3
+      uses: advanced-security/maven-dependency-submission-action@v2
+      
+  sonarqube_test:
+ 
+    needs: [maven_test]
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+
+    - name: Restore cached build
+      uses: actions/cache@v3
+      with:
+        key: cached-build-${{github.sha}}
+        path: .
+
+    - name: SonarQube Scan
+      uses: sonarsource/sonarqube-scan-action@master
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: https://sonarcloud.io
